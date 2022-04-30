@@ -1,24 +1,27 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { GeoJSON } from 'geojson'
 
 import { fetchBoatRamps } from 'src/api/client'
 
 import { RootState } from 'src/store'
 
-const featuresAdapter = createEntityAdapter()
-
 type Status = 'idle' | 'loading' | 'succeeded' | 'failed'
 type Error = string | null | undefined
+
+type Data = GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | string | undefined
 
 interface InitialState {
   status: Status
   error: Error
+  data?: Data
 }
 
-const initialState = featuresAdapter.getInitialState<InitialState>({
+const initialState: InitialState = {
   status: 'idle',
   error: undefined,
-})
+  data: {} as Data,
+}
 
 export const fetchData = createAsyncThunk('features/boatRamps', async () => {
   const response = await fetchBoatRamps()
@@ -36,7 +39,7 @@ const featuresSlice = createSlice({
       })
       .addCase(fetchData.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        featuresAdapter.upsertMany(state, action.payload.features)
+        state.data = action.payload
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.status = 'failed'
@@ -47,4 +50,4 @@ const featuresSlice = createSlice({
 
 export const { reducer } = featuresSlice
 
-export const { selectAll: selectAllFeatures } = featuresAdapter.getSelectors((state: RootState) => state.features)
+export const selectAllFeatures = (state: RootState) => state.features

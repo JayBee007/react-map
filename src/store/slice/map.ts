@@ -6,7 +6,7 @@ import { RootState } from 'src/store'
 const initialState = {
   latitude: -28.0167,
   longitude: 153.4,
-  zoom: 10,
+  zoom: 12,
 }
 
 const mapSlice = createSlice({

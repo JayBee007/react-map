@@ -1,9 +1,8 @@
 import { Provider } from 'react-redux'
 
-import { store } from './store'
-
-import { Layout } from './components/Layout'
-import { Map } from './components/Map'
+import { Layout } from 'src/components/Layout'
+import { Map } from 'src/components/Map'
+import { store } from 'src/store'
 
 function App() {
   return (

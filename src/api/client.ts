@@ -1,13 +1,9 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://raw.githubusercontent.com/JRGranell/javascript-challenge/'
-
-const BOAT_RAMPS_URL = 'master/data/boat_ramps.geojson'
-
 const client = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.REACT_APP_BASE_URL,
 })
 
 export async function fetchBoatRamps() {
-  return client.get(BOAT_RAMPS_URL)
+  return client.get(process.env.REACT_APP_BOAT_RAMPS_URL!)
 }

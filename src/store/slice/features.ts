@@ -1,14 +1,23 @@
 /* eslint-disable no-param-reassign */
-
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
 
-import { fetchBoatRamps } from '../../api/client'
+import { fetchBoatRamps } from 'src/api/client'
+
+import { RootState } from 'src/store'
 
 const featuresAdapter = createEntityAdapter()
 
-const initialState = featuresAdapter.getInitialState({
+type Status = 'idle' | 'loading' | 'succeeded' | 'failed'
+type Error = string | null | undefined
+
+interface InitialState {
+  status: Status
+  error: Error
+}
+
+const initialState = featuresAdapter.getInitialState<InitialState>({
   status: 'idle',
-  error: null,
+  error: undefined,
 })
 
 export const fetchData = createAsyncThunk('features/boatRamps', async () => {
@@ -31,7 +40,6 @@ const featuresSlice = createSlice({
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.status = 'failed'
-        // @ts-ignore
         state.error = action.error.message
       })
   },
@@ -39,5 +47,4 @@ const featuresSlice = createSlice({
 
 export const { reducer } = featuresSlice
 
-// @ts-ignore
-export const { selectAll: selectAllFeatures } = featuresAdapter.getSelectors((state) => state.features)
+export const { selectAll: selectAllFeatures } = featuresAdapter.getSelectors((state: RootState) => state.features)

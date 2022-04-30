@@ -38,3 +38,6 @@ const featuresSlice = createSlice({
 })
 
 export const { reducer } = featuresSlice
+
+// @ts-ignore
+export const { selectAll: selectAllFeatures } = featuresAdapter.getSelectors((state) => state.features)

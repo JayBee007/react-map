@@ -7,6 +7,7 @@ import { useEnv } from 'src/hooks/useEnv'
 import { mapUpdate, selectMapState } from 'src/store/slice/map'
 import { selectAllFeatures } from 'src/store/slice/features'
 import { visUpdate } from 'src/store/slice/dataVis'
+import { selectNumberOfRampsFilter } from 'src/store/slice/filter'
 
 const BOAT_RAMPS_LINE = 'boat-ramps-line'
 const BOAT_RAMPS_CIRCLE = 'boat-ramps-circle'
@@ -24,6 +25,7 @@ export function Map() {
   const mapRef = useRef<MapRef>()
   const viewport = useSelector(selectMapState)
   const features = useSelector(selectAllFeatures)
+  const numberOfRampsFilter = useSelector(selectNumberOfRampsFilter)
 
   const dispatch = useDispatch()
 
@@ -42,6 +44,15 @@ export function Map() {
     dispatch(visUpdate(visibleFeatures))
   }, [dispatch])
 
+  // @ts-ignore
+  const data = { ...features?.data }
+
+  if (!isEmpty(numberOfRampsFilter)) {
+    data.features = data?.features.filter((feature: { properties: { number_lan: { toString: () => string } } }) => {
+      return numberOfRampsFilter.includes(feature.properties.number_lan.toString())
+    })
+  }
+
   return (
     <ReactMapGL
       // @ts-ignore
@@ -54,7 +65,7 @@ export function Map() {
       onMove={handleViewStateChange}
       onLoad={onMapLoad}
     >
-      <Source type="geojson" data={features.data}>
+      <Source type="geojson" data={data}>
         <Layer
           minzoom={16}
           id={BOAT_RAMPS_LINE}

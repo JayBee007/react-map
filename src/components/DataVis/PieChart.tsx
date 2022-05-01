@@ -1,10 +1,12 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RadialChart } from 'react-vis'
 import isEmpty from 'lodash.isempty'
 
+import { toggleRampsPerSizeFilter } from 'src/store/slice/filter'
 import { selectRampsPerSize } from 'src/store/slice/dataVis'
 
 export function PieChart() {
+  const dispatch = useDispatch()
   const rampsPerSize = useSelector(selectRampsPerSize)
 
   if (isEmpty(rampsPerSize)) return null
@@ -14,8 +16,7 @@ export function PieChart() {
       <p>Ramps per Size</p>
       <div>
         <RadialChart
-          // eslint-disable-next-line no-console
-          onValueClick={(...args) => console.log('args', args)}
+          onValueClick={(dataPoint) => dispatch(toggleRampsPerSizeFilter(dataPoint))}
           showLabels
           labelsStyle={{ fontSize: '0.85rem', fill: '#fff' }}
           style={{ strokeWidth: 2, cursor: 'pointer' }}

@@ -7,6 +7,7 @@ import { useEnv } from 'src/hooks/useEnv'
 import { mapUpdate, selectMapState } from 'src/store/slice/map'
 import { selectAllFeatures } from 'src/store/slice/features'
 import { visUpdate } from 'src/store/slice/dataVis'
+import { selectNumberOfRampsFilter, selectRampsPerSizeFilter } from 'src/store/slice/filter'
 
 const BOAT_RAMPS_LINE = 'boat-ramps-line'
 const BOAT_RAMPS_CIRCLE = 'boat-ramps-circle'
@@ -24,6 +25,8 @@ export function Map() {
   const mapRef = useRef<MapRef>()
   const viewport = useSelector(selectMapState)
   const features = useSelector(selectAllFeatures)
+  const numberOfRampsFilter = useSelector(selectNumberOfRampsFilter)
+  const rampsPerSizeFilter = useSelector(selectRampsPerSizeFilter)
 
   const dispatch = useDispatch()
 
@@ -42,6 +45,28 @@ export function Map() {
     dispatch(visUpdate(visibleFeatures))
   }, [dispatch])
 
+  // @ts-ignore
+  const data = { ...features?.data }
+
+  if (!isEmpty(numberOfRampsFilter)) {
+    data.features = data?.features.filter((feature: { properties: { number_lan: number } }) => {
+      return numberOfRampsFilter.includes(feature.properties.number_lan)
+    })
+  }
+
+  if (!isEmpty(rampsPerSizeFilter)) {
+    data.features = data?.features.filter((feature: { properties: { area_: number } }) => {
+      // eslint-disable-next-line no-underscore-dangle
+      const area = feature?.properties!.area_
+      for (let i = 0; i < rampsPerSizeFilter.length; i += 1) {
+        if (area < rampsPerSizeFilter[i]) {
+          return true
+        }
+      }
+
+      return false
+    })
+  }
   return (
     <ReactMapGL
       // @ts-ignore
@@ -54,7 +79,7 @@ export function Map() {
       onMove={handleViewStateChange}
       onLoad={onMapLoad}
     >
-      <Source type="geojson" data={features.data}>
+      <Source type="geojson" data={data}>
         <Layer
           minzoom={16}
           id={BOAT_RAMPS_LINE}

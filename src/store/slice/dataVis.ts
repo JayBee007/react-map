@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit'
 import mapboxgl from 'mapbox-gl'
+import isEmpty from 'lodash.isempty'
 
 import { RootState } from 'src/store'
 
@@ -13,6 +14,7 @@ interface RampsPerSize {
   angle: number
   totalRamps: number
   label: string
+  compare: number
 }
 
 type InitialState = {
@@ -28,12 +30,11 @@ const initialState: InitialState = {
 const AREAS = [50, 200, 526]
 
 function getDataForVis(features: mapboxgl.MapboxGeoJSONFeature[]): [NumberOfRamps[], RampsPerSize[]] {
-  const totalFeatures = features.length
-  const ramps = new Map<number, number>()
   const numberOfRampsResult: NumberOfRamps[] = []
   const rampsPerSizeResult: RampsPerSize[] = [
     {
       label: '[0,50]',
+      compare: 50,
       angle: 0,
       totalRamps: 0,
     },
@@ -41,13 +42,20 @@ function getDataForVis(features: mapboxgl.MapboxGeoJSONFeature[]): [NumberOfRamp
       label: '[50,200]',
       angle: 0,
       totalRamps: 0,
+      compare: 200,
     },
     {
       label: '[200,526]',
       angle: 0,
       totalRamps: 0,
+      compare: 526,
     },
   ]
+  if (isEmpty(features)) {
+    return [numberOfRampsResult, []]
+  }
+  const totalFeatures = features.length
+  const ramps = new Map<number, number>()
 
   features.forEach((feature) => {
     const number = feature?.properties!.number_lan

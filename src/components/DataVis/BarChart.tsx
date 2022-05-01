@@ -1,10 +1,15 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { XYPlot, XAxis, YAxis, VerticalBarSeries } from 'react-vis'
+import isEmpty from 'lodash.isempty'
 
+import { toggleNumberOfRampsFilter } from 'src/store/slice/filter'
 import { selectNumberOfRamps } from 'src/store/slice/dataVis'
 
 export function BarChart() {
+  const dispatch = useDispatch()
   const numberOfRamps = useSelector(selectNumberOfRamps)
+
+  if (isEmpty(numberOfRamps)) return null
 
   return (
     <div>
@@ -12,8 +17,8 @@ export function BarChart() {
       <div>
         <XYPlot xType="ordinal" width={360} height={300} xDistance={5}>
           <VerticalBarSeries
-            // eslint-disable-next-line no-console
-            onValueClick={(...args) => console.log('args', args)}
+            style={{ cursor: 'pointer' }}
+            onValueClick={(dataPoint) => dispatch(toggleNumberOfRampsFilter(dataPoint))}
             barWidth={0.5}
             data={numberOfRamps}
           />

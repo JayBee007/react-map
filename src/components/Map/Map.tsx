@@ -1,10 +1,22 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, MutableRefObject } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ReactMapGL, { ViewStateChangeEvent, Source, Layer, MapRef } from 'react-map-gl'
+import isEmpty from 'lodash.isempty'
 
 import { useEnv } from 'src/hooks/useEnv'
 import { mapUpdate, selectMapState } from 'src/store/slice/map'
 import { selectAllFeatures } from 'src/store/slice/features'
+import { visUpdate } from 'src/store/slice/dataVis'
+
+const BOAT_RAMPS_LINE = 'boat-ramps-line'
+const BOAT_RAMPS_CIRCLE = 'boat-ramps-circle'
+
+function getVisibleFeatuers(mapRef: MutableRefObject<MapRef | undefined>) {
+  const visibleLineFeatures = mapRef?.current!.queryRenderedFeatures(undefined, { layers: [BOAT_RAMPS_LINE] })
+  const visibleCircleFeatures = mapRef?.current!.queryRenderedFeatures(undefined, { layers: [BOAT_RAMPS_CIRCLE] })
+
+  return isEmpty(visibleCircleFeatures) ? visibleLineFeatures : visibleCircleFeatures
+}
 
 export function Map() {
   const { MAPBOX_TOKEN } = useEnv()
@@ -18,21 +30,17 @@ export function Map() {
   const handleViewStateChange = useCallback(
     (evt: ViewStateChangeEvent) => {
       dispatch(mapUpdate(evt.viewState))
+
+      const visibleFeatures = getVisibleFeatuers(mapRef)
+      dispatch(visUpdate(visibleFeatures))
     },
     [dispatch]
   )
 
   const onMapLoad = useCallback(() => {
-    // @ts-ignore
-    mapRef.current.on('click', 'boat-ramps', (evt) => {
-      // eslint-disable-next-line no-console
-      console.log('evt', evt)
-      // @ts-ignore
-      const feature = mapRef.current.queryRenderedFeatures(evt.point)
-      // eslint-disable-next-line no-console
-      console.log(feature)
-    })
-  }, [])
+    const visibleFeatures = getVisibleFeatuers(mapRef)
+    dispatch(visUpdate(visibleFeatures))
+  }, [dispatch])
 
   return (
     <ReactMapGL
@@ -48,7 +56,16 @@ export function Map() {
     >
       <Source type="geojson" data={features.data}>
         <Layer
-          id="boat-ramps"
+          minzoom={16}
+          id={BOAT_RAMPS_LINE}
+          type="fill"
+          paint={{
+            'fill-color': 'purple',
+          }}
+        />
+        <Layer
+          maxzoom={16}
+          id={BOAT_RAMPS_CIRCLE}
           type="circle"
           paint={{
             'circle-color': '#ffff00',

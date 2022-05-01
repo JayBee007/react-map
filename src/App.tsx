@@ -2,8 +2,8 @@ import { Provider } from 'react-redux'
 
 import { Layout } from 'src/components/Layout'
 import { Map } from 'src/components/Map'
-import { BarChart } from 'src/components/DataVis/BarChart'
-import { PieChart } from 'src/components/DataVis/PieChart'
+import { BarChart, PieChart } from 'src/components/DataVis'
+import { FilterTags } from 'src/components/FilterTags'
 import { store } from 'src/store'
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
     <Provider store={store}>
       <Layout>
         <Layout.Sidebar>
+          <FilterTags />
           <BarChart />
           <PieChart />
         </Layout.Sidebar>

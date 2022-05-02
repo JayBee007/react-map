@@ -14,7 +14,6 @@ interface RampsPerSize {
   angle: number
   totalRamps: number
   label: string
-  compare: number
 }
 
 type InitialState = {
@@ -34,7 +33,6 @@ function getDataForVis(features: mapboxgl.MapboxGeoJSONFeature[]): [NumberOfRamp
   const rampsPerSizeResult: RampsPerSize[] = [
     {
       label: '[0,50]',
-      compare: 50,
       angle: 0,
       totalRamps: 0,
     },
@@ -42,13 +40,11 @@ function getDataForVis(features: mapboxgl.MapboxGeoJSONFeature[]): [NumberOfRamp
       label: '[50,200]',
       angle: 0,
       totalRamps: 0,
-      compare: 200,
     },
     {
       label: '[200,526]',
       angle: 0,
       totalRamps: 0,
-      compare: 526,
     },
   ]
   if (isEmpty(features)) {

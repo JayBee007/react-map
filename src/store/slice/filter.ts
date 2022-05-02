@@ -5,7 +5,22 @@ import { RootState } from 'src/store'
 
 type InitialState = {
   numberOfRampsFilter: number[]
-  rampsPerSizeFilter: number[]
+  rampsPerSizeFilter: string[]
+}
+
+export const AREA_COMPARISON = {
+  '[0,50]': {
+    gt: 0,
+    lt: 50,
+  },
+  '[50,200]': {
+    gt: 50,
+    lt: 200,
+  },
+  '[200,526]': {
+    gt: 200,
+    lt: 526,
+  },
 }
 
 const initialState: InitialState = {
@@ -26,11 +41,11 @@ const filterSlice = createSlice({
       }
     },
     toggleRampsPerSizeFilter(state, action) {
-      const { compare } = action.payload
-      if (state.rampsPerSizeFilter.includes(compare)) {
-        state.rampsPerSizeFilter = state.rampsPerSizeFilter.filter((val) => val !== compare)
+      const { label } = action.payload
+      if (state.rampsPerSizeFilter.includes(label)) {
+        state.rampsPerSizeFilter = state.rampsPerSizeFilter.filter((val) => val !== label)
       } else {
-        state.rampsPerSizeFilter.push(compare)
+        state.rampsPerSizeFilter.push(label)
       }
     },
   },

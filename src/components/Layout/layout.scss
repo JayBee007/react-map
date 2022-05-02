@@ -1,0 +1,15 @@
+.layout-container {
+  display: flex;
+  min-height: 100%;
+}
+
+.layout-sidebar {
+  width: 400px;
+  background-color: rgb(69, 69, 69);
+  padding: 1rem;
+}
+
+.layout-main {
+  flex: 1;
+  overflow: auto;
+}

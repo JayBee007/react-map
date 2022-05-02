@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'src/store'
 
 type InitialState = {
-  numberOfRampsFilter: number[]
+  numberOfRampsFilter: string[]
   rampsPerSizeFilter: string[]
 }
 

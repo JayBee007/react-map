@@ -6,7 +6,7 @@ import isEmpty from 'lodash.isempty'
 import { RootState } from 'src/store'
 
 interface NumberOfRamps {
-  x: number
+  x: string
   y: number
 }
 
@@ -51,14 +51,15 @@ function getDataForVis(features: mapboxgl.MapboxGeoJSONFeature[]): [NumberOfRamp
     return [numberOfRampsResult, []]
   }
   const totalFeatures = features.length
-  const ramps = new Map<number, number>()
+  const ramps = new Map<string, number>()
 
   features.forEach((feature) => {
+    const material = feature?.properties!.material
     const number = feature?.properties!.number_lan
-    if (ramps.has(number)) {
-      ramps.set(number, ramps.get(number)! + 1)
+    if (ramps.has(material)) {
+      ramps.set(material, ramps.get(material)! + number)
     } else {
-      ramps.set(number, +1)
+      ramps.set(material, number)
     }
 
     // eslint-disable-next-line no-underscore-dangle

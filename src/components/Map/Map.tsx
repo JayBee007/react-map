@@ -49,8 +49,8 @@ export function Map() {
   const data = { ...features?.data }
 
   if (!isEmpty(numberOfRampsFilter)) {
-    data.features = data?.features.filter((feature: { properties: { number_lan: number } }) => {
-      return numberOfRampsFilter.includes(feature.properties.number_lan)
+    data.features = data?.features.filter((feature: { properties: { material: string } }) => {
+      return numberOfRampsFilter.includes(feature.properties.material)
     })
   }
 

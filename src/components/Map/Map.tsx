@@ -7,7 +7,7 @@ import { useEnv } from 'src/hooks/useEnv'
 import { mapUpdate, selectMapState } from 'src/store/slice/map'
 import { selectAllFeatures } from 'src/store/slice/features'
 import { visUpdate } from 'src/store/slice/dataVis'
-import { selectNumberOfRampsFilter, selectRampsPerSizeFilter } from 'src/store/slice/filter'
+import { selectNumberOfRampsFilter, selectRampsPerSizeFilter, AREA_COMPARISON } from 'src/store/slice/filter'
 
 const BOAT_RAMPS_LINE = 'boat-ramps-line'
 const BOAT_RAMPS_CIRCLE = 'boat-ramps-circle'
@@ -59,7 +59,8 @@ export function Map() {
       // eslint-disable-next-line no-underscore-dangle
       const area = feature?.properties!.area_
       for (let i = 0; i < rampsPerSizeFilter.length; i += 1) {
-        if (area < rampsPerSizeFilter[i]) {
+        // @ts-ignore
+        if (AREA_COMPARISON[rampsPerSizeFilter[i]].gt < area && area < AREA_COMPARISON[rampsPerSizeFilter[i]].lt) {
           return true
         }
       }

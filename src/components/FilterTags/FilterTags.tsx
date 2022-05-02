@@ -45,8 +45,8 @@ export function FilterTags() {
               {rampsPerSizeFilter.map((filter) => (
                 <Badge
                   key={filter}
-                  label={`< ${filter}`}
-                  onClick={() => dispatch(toggleRampsPerSizeFilter({ compare: filter }))}
+                  label={filter}
+                  onClick={() => dispatch(toggleRampsPerSizeFilter({ label: filter }))}
                 />
               ))}
             </div>

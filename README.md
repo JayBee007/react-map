@@ -1,7 +1,5 @@
 # React Map
 
-Possible solution for the JS challenge: https://github.com/JRGranell/javascript-challenge
-
 Demo: [https://reactory-map.surge.sh/](https://reactory-map.surge.sh/)
 
 ### Dev setup
